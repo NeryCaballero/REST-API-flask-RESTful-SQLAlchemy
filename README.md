@@ -1,4 +1,10 @@
 # Flask RESTful API SQLite3
+
+1. resources dir, init, item, userRegister
+
+2. models dir, init, classUserModel, item
+
+
 <hr>
 
 This project is a continuation of my previous [REST API](https://github.com/NeryCaballero/REST-API-flask-RESTful) created with Python `flask` , `flask_restful` and `flask_jwt`.
