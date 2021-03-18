@@ -13,20 +13,13 @@ class Item(Resource):
                         help="This field cannot be left blank!"
                         )
 
-    @jwt_required()
-    def get(self, name):
-        item = ItemModel.find_by_name(name)
-        if item:
-            return item.json()
-        return {'message': 'Item not found'}, 404
-
+    #C
     @jwt_required()
     def post(self, name):
         if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400
 
         data = Item.parser.parse_args()
-
         item = ItemModel(name, data['price'])
 
         try:
@@ -36,18 +29,18 @@ class Item(Resource):
 
         return item.json(), 201
 
+    #R
     @jwt_required()
-    def delete(self, name):
+    def get(self, name):
         item = ItemModel.find_by_name(name)
         if item:
-            item.delete_from_db()
-            return {'message': 'Item deleted.'}
-        return {'message': 'Item not found.'}, 404
+            return item.json()
+        return {'message': 'Item not found'}, 404
 
+    #U
     @jwt_required()
     def put(self, name):
         data = Item.parser.parse_args()
-
         item = ItemModel.find_by_name(name)
 
         if item is None:
@@ -56,8 +49,17 @@ class Item(Resource):
             item.price = data['price']
 
         item.save_to_db()
-
         return item.json()
+
+    #D
+    @jwt_required()
+    def delete(self, name):
+        item = ItemModel.find_by_name(name)
+        if item:
+            item.delete_from_db()
+            return {'message': 'Item deleted.'}
+        else:
+            return {'message': 'Item not found.'}, 404
 
 
 class ItemList(Resource):
@@ -69,7 +71,7 @@ class ItemList(Resource):
         result = cursor.execute(query)
         items = []
         for row in result:
-            items.append({'name': row[0], 'price': row[1]})
+            items.append({'name': row[1], 'price': row[2]})
         connection.close()
 
         return {'items': items}
